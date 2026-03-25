@@ -70,128 +70,150 @@ export const Chatbot = () => {
   };
 
   return (
-    <div className="fixed bottom-6 left-6 z-[60] font-sans">
+    <div className="fixed bottom-6 right-6 z-[1000] font-sans">
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            layout
+            initial={{ opacity: 0, scale: 0.9, y: 20, x: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20, x: 20 }}
             className={cn(
-              "luxury-glass border border-gold/30 shadow-2xl rounded-2xl overflow-hidden flex flex-col transition-all duration-300",
-              isMinimized ? "h-16 w-64" : "h-[550px] w-[350px] md:w-[400px]"
+              "luxury-glass border border-gold/30 shadow-2xl rounded-2xl overflow-hidden flex flex-col transition-all duration-500",
+              isMinimized ? "h-[60px] w-[220px]" : "h-[550px] md:h-[650px] w-[320px] md:w-[400px] max-h-[85vh]"
             )}
           >
             {/* Header */}
-            <div className="bg-primary/80 backdrop-blur-xl p-5 flex justify-between items-center border-b border-gold/20">
+            <div 
+              className="bg-[#8B0000] p-3.5 flex justify-between items-center border-b border-gold/30 shrink-0 relative z-10 cursor-pointer"
+              onClick={() => isMinimized && setIsMinimized(false)}
+            >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gold flex items-center justify-center shadow-lg">
-                  <Bot className="w-6 h-6 text-primary" />
+                <div className="w-8 h-8 rounded-full bg-gold flex items-center justify-center shadow-lg border border-white/20">
+                  <Bot className="w-4.5 h-4.5 text-primary" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="display-text text-lg text-white leading-none">Farm Helper</span>
-                  <span className="micro-label text-gold text-[8px] tracking-[0.3em]">AI Assistant</span>
+                  <span className="display-text text-sm text-white leading-none font-semibold tracking-wide">Mushtaq Farm Assistant</span>
+                  <span className="micro-label text-gold-light text-[7px] uppercase tracking-[0.2em] mt-1 opacity-80">Online & Ready to Help</span>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5">
                 <button 
-                  onClick={() => setIsMinimized(!isMinimized)} 
-                  className="text-gold/50 hover:text-gold transition-colors p-1"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsMinimized(!isMinimized);
+                  }} 
+                  className="text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all p-1.5"
                   title={isMinimized ? "Expand" : "Minimize"}
                 >
                   {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minus className="w-4 h-4" />}
                 </button>
                 <button 
-                  onClick={() => setIsOpen(false)} 
-                  className="text-gold/50 hover:text-gold transition-colors p-1"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsOpen(false);
+                  }} 
+                  className="text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all p-1.5"
                   title="Close"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
             {!isMinimized && (
               <>
-                {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-black/20">
+                {/* Enhanced Conversation Area */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#1A1A1A]/95 backdrop-blur-md scrollbar-thin scrollbar-thumb-gold/30 scrollbar-track-transparent">
+                  <div className="text-center mb-4">
+                    <span className="text-[9px] text-gold/40 uppercase tracking-[0.3em] font-medium">Today</span>
+                  </div>
+                  
                   {messages.map((msg, idx) => (
-                    <div
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
                       key={idx}
                       className={cn(
-                        "flex gap-4 max-w-[90%]",
+                        "flex gap-3 max-w-[88%]",
                         msg.role === 'user' ? "ml-auto flex-row-reverse" : "mr-auto"
                       )}
                     >
                       <div className={cn(
-                        "w-9 h-9 rounded-full flex items-center justify-center shrink-0 shadow-md",
-                        msg.role === 'user' ? "bg-primary border border-gold/30" : "bg-gold"
+                        "w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-lg border",
+                        msg.role === 'user' ? "bg-[#8B0000] border-gold/30" : "bg-gold border-white/20"
                       )}>
-                        {msg.role === 'user' ? <User className="w-5 h-5 text-gold" /> : <Bot className="w-5 h-5 text-primary" />}
+                        {msg.role === 'user' ? <User className="w-4 h-4 text-gold" /> : <Bot className="w-4 h-4 text-primary" />}
                       </div>
                       <div className={cn(
-                        "p-4 rounded-2xl text-sm leading-relaxed shadow-sm",
+                        "p-3.5 rounded-2xl text-[11px] md:text-[12px] leading-relaxed shadow-md transition-all",
                         msg.role === 'user' 
-                          ? "bg-primary text-cream rounded-tr-none border border-gold/20" 
-                          : "bg-white/5 backdrop-blur-md border border-white/10 text-cream rounded-tl-none"
+                          ? "bg-[#8B0000] text-cream rounded-tr-none border border-gold/20" 
+                          : "bg-white/5 backdrop-blur-xl border border-white/10 text-cream rounded-tl-none"
                       )}>
                         <p className="whitespace-pre-line">{msg.text}</p>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                   {isLoading && (
-                    <div className="flex gap-4 mr-auto">
-                      <div className="w-9 h-9 rounded-full bg-gold flex items-center justify-center shrink-0 shadow-md">
-                        <Bot className="w-5 h-5 text-primary" />
+                    <div className="flex gap-3 mr-auto">
+                      <div className="w-8 h-8 rounded-full bg-gold flex items-center justify-center shrink-0 shadow-lg">
+                        <Bot className="w-4 h-4 text-primary" />
                       </div>
-                      <div className="p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 text-cream rounded-tl-none flex items-center gap-2">
-                        <Loader2 className="w-4 h-4 animate-spin text-gold" />
-                        <span className="text-xs italic opacity-50">Typing...</span>
+                      <div className="p-3 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 text-cream rounded-tl-none flex items-center gap-3">
+                        <div className="flex gap-1">
+                          <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-gold rounded-full" />
+                          <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-gold rounded-full" />
+                          <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-gold rounded-full" />
+                        </div>
+                        <span className="text-[10px] italic text-gold/60 font-medium">Assistant is thinking...</span>
                       </div>
                     </div>
                   )}
-                  <div ref={messagesEndRef} />
+                  <div ref={messagesEndRef} className="h-4" />
                 </div>
 
-                {/* Input Area */}
-                <div className="p-4 border-t border-gold/20 bg-primary/40 backdrop-blur-xl">
-                  <div className="flex gap-2 mb-4">
+                {/* Enhanced Input Area */}
+                <div className="p-4 border-t border-gold/20 bg-[#1A1A1A] shrink-0 relative z-10">
+                  <div className="flex gap-2.5 mb-3">
                     <input
                       type="text"
                       value={inputText}
                       onChange={(e) => setInputText(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleSendMessage(inputText)}
-                      placeholder="Ask in Urdu or English..."
-                      className="flex-1 bg-white/5 border border-gold/20 rounded-lg px-4 py-2 text-sm text-cream focus:outline-none focus:border-gold transition-colors"
+                      placeholder="Type your message here..."
+                      className="flex-1 bg-white/5 border border-gold/20 rounded-xl px-4 py-2.5 text-xs text-cream focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/30 transition-all placeholder:text-white/20"
                     />
                     <button
                       onClick={() => handleSendMessage(inputText)}
                       disabled={isLoading || !inputText.trim()}
-                      className="bg-gold text-primary p-2 rounded-lg hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="bg-gold text-primary p-2.5 rounded-xl hover:bg-white hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(201,168,76,0.2)]"
                     >
-                      <Send className="w-5 h-5" />
+                      <Send className="w-4.5 h-4.5" />
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2">
-                    <button 
-                      onClick={() => handleQuickAction('pricing')}
-                      className="flex items-center gap-2 bg-white/5 hover:bg-gold hover:text-primary border border-gold/20 p-2 rounded-lg text-[10px] transition-all text-cream"
-                    >
-                      <CreditCard className="w-3 h-3" /> Pricing
-                    </button>
-                    <button 
-                      onClick={() => handleQuickAction('overseas')}
-                      className="flex items-center gap-2 bg-white/5 hover:bg-gold hover:text-primary border border-gold/20 p-2 rounded-lg text-[10px] transition-all text-cream"
-                    >
-                      <Info className="w-3 h-3" /> Overseas
-                    </button>
+                  <div className="flex flex-col gap-2">
+                    <div className="grid grid-cols-2 gap-2">
+                      <button 
+                        onClick={() => handleQuickAction('pricing')}
+                        className="flex items-center justify-center gap-2 bg-white/5 hover:bg-gold hover:text-primary border border-gold/10 py-2 rounded-xl text-[9px] font-semibold transition-all text-cream uppercase tracking-widest"
+                      >
+                        <CreditCard className="w-3 h-3" /> View Pricing
+                      </button>
+                      <button 
+                        onClick={() => handleQuickAction('overseas')}
+                        className="flex items-center justify-center gap-2 bg-white/5 hover:bg-gold hover:text-primary border border-gold/10 py-2 rounded-xl text-[9px] font-semibold transition-all text-cream uppercase tracking-widest"
+                      >
+                        <Info className="w-3 h-3" /> Overseas Info
+                      </button>
+                    </div>
                     <a 
                       href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || '15551385960'}`}
                       target="_blank"
-                      className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-white hover:text-[#25D366] p-2 rounded-lg text-[10px] transition-all text-white font-bold col-span-2"
+                      className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-white hover:text-[#25D366] py-2.5 rounded-xl text-[10px] transition-all text-white font-bold uppercase tracking-[0.15em] shadow-lg"
                     >
-                      <Phone className="w-3 h-3" /> WhatsApp for Direct Booking
+                      <Phone className="w-3.5 h-3.5" /> Direct WhatsApp Booking
                     </a>
                   </div>
                 </div>
@@ -202,18 +224,21 @@ export const Chatbot = () => {
       </AnimatePresence>
 
       <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.1, rotate: 5 }}
+        whileTap={{ scale: 0.9 }}
         onClick={() => {
           setIsOpen(true);
           setIsMinimized(false);
         }}
         className={cn(
-          "w-16 h-16 rounded-full bg-gold text-primary shadow-[0_0_40px_rgba(201,168,76,0.4)] flex items-center justify-center transition-all duration-500 hover:bg-white",
-          isOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+          "w-16 h-16 rounded-full bg-gold text-primary shadow-[0_10px_40px_rgba(201,168,76,0.5)] flex items-center justify-center transition-all duration-500 hover:bg-white group",
+          isOpen ? "opacity-0 pointer-events-none translate-y-10" : "opacity-100 translate-y-0"
         )}
       >
-        <MessageSquare className="w-7 h-7" />
+        <MessageSquare className="w-7 h-7 group-hover:scale-110 transition-transform" />
+        <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#8B0000] rounded-full border-2 border-primary flex items-center justify-center">
+          <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+        </span>
       </motion.button>
     </div>
   );
