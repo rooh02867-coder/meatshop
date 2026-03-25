@@ -50,7 +50,7 @@ const TrustBadges = () => (
 
 const WhatsAppFloat = () => (
   <a
-    href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || '923000000000'}`}
+    href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || '15551385960'}`}
     target="_blank"
     rel="noopener noreferrer"
     className="fixed bottom-6 right-6 z-50 flex items-center group"

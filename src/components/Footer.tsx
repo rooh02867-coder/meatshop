@@ -119,7 +119,7 @@ export const Footer = () => {
               </li>
               <li className="flex items-center">
                 <Phone className="text-gold mr-3 w-4 h-4" />
-                <a href={`tel:+${import.meta.env.VITE_WHATSAPP_NUMBER || '923000000000'}`} className="text-cream/50 hover:text-gold transition-colors text-sm">+{import.meta.env.VITE_WHATSAPP_NUMBER || '92 300 0000000'}</a>
+                <a href={`tel:+${import.meta.env.VITE_WHATSAPP_NUMBER || '15551385960'}`} className="text-cream/50 hover:text-gold transition-colors text-sm">+{import.meta.env.VITE_WHATSAPP_NUMBER || '1 555 138 5960'}</a>
               </li>
               <li className="flex items-center">
                 <Mail className="text-gold mr-3 w-4 h-4" />
@@ -132,7 +132,7 @@ export const Footer = () => {
             <div className="bg-primary/20 border border-gold/20 p-6 rounded-sm">
               <h4 className="font-serif text-xl text-gold mb-2">Ready to Book?</h4>
               <p className="text-cream/60 text-sm mb-6">Reach out to our team instantly via WhatsApp for quick booking.</p>
-              <a href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || '923000000000'}`} target="_blank" className="block w-full text-center bg-[#25D366] text-white py-3 rounded-sm font-bold hover:bg-[#1EBE5D] transition-colors font-sans text-sm">
+              <a href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || '15551385960'}`} target="_blank" className="block w-full text-center bg-[#25D366] text-white py-3 rounded-sm font-bold hover:bg-[#1EBE5D] transition-colors font-sans text-sm">
                 Chat with Us
               </a>
             </div>

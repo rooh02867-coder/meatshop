@@ -135,7 +135,7 @@ export const Chatbot = () => {
                       <Truck className="w-3 h-3" /> Delivery
                     </button>
                     <a 
-                      href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || '923000000000'}`}
+                      href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || '15551385960'}`}
                       target="_blank"
                       className="flex items-center gap-2 bg-[#25D366] hover:bg-white hover:text-[#25D366] p-3 rounded-lg text-xs transition-all text-white font-bold"
                     >
