@@ -42,7 +42,15 @@ export const Stats = () => {
 
   return (
     <section className="py-32 relative overflow-hidden">
-      <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent"></div>
+      <div className="absolute inset-0 z-0 opacity-10 grayscale">
+        <img 
+          src="https://images.unsplash.com/photo-1546445317-29f4545e9d53?q=80&w=2070&auto=format&fit=crop" 
+          className="w-full h-full object-cover"
+          alt="Cattle background"
+          referrerPolicy="no-referrer"
+        />
+      </div>
+      <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-gold/20 to-transparent z-10"></div>
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 text-center">

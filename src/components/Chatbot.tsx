@@ -1,11 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { GoogleGenAI } from "@google/genai";
-import { MessageSquare, Send, X, Minus, Maximize2, Bot, User } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
+import { MessageSquare, Send, X, Minus, Maximize2, Bot, User, Phone, Info, CreditCard, Truck } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
 interface Message {
   role: 'user' | 'model';
@@ -15,11 +11,9 @@ interface Message {
 export const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([
     { role: 'model', text: "As-salamu alaykum! I'm the Mushtaq Cattle Farm assistant. How can I help you with your Qurbani booking today?" }
   ]);
-  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -30,40 +24,27 @@ export const Chatbot = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
-
-    const userMessage = input.trim();
-    setInput('');
-    setMessages(prev => [...prev, { role: 'user', text: userMessage }]);
-    setIsLoading(true);
-
-    try {
-      const chat = ai.chats.create({
-        model: "gemini-3-flash-preview",
-        config: {
-          systemInstruction: `You are a helpful and respectful assistant for Mushtaq Cattle Farm. 
-          The farm provides premium Qurbani services. 
-          Key info:
-          - Packages: Bakra/Goat (PKR 55,000), Cow Hissa/Share (PKR 27,000), Whole Cow (PKR 185,000).
-          - Services: Shariah-compliant sacrifice, video proof via WhatsApp, home delivery in Lahore, or 100% donation to needy.
-          - Location: ${import.meta.env.VITE_FARM_ADDRESS || 'Ring Road, Lahore, Pakistan'}.
-          - Contact: WhatsApp at +${import.meta.env.VITE_WHATSAPP_NUMBER || '923000000000'}, Email at ${import.meta.env.VITE_CONTACT_EMAIL || 'info@mushtaqcattle.com'}.
-          - Global reach: We serve overseas Pakistanis (UK, UAE, USA, etc.).
-          - Payment: Bank transfer, JazzCash, EasyPaisa, International Remittance.
-          - Ethics: Farm-raised animals, organic feed, scholar-verified.
-          Be polite, use Islamic greetings where appropriate, and encourage users to book via the website form.`,
-        },
-      });
-
-      const response = await chat.sendMessage({ message: userMessage });
-      setMessages(prev => [...prev, { role: 'model', text: response.text || "I'm sorry, I couldn't process that. Please try again." }]);
-    } catch (error) {
-      console.error("Chat error:", error);
-      setMessages(prev => [...prev, { role: 'model', text: "I'm having some trouble connecting. Please try again later or contact us via WhatsApp." }]);
-    } finally {
-      setIsLoading(false);
+  const handleQuickAction = (action: string) => {
+    let response = "";
+    switch(action) {
+      case 'pricing':
+        response = "Our 2026 packages are: \n- Bakra/Goat: PKR 55,000\n- Cow Hissa: PKR 27,000\n- Whole Cow: PKR 185,000\nAll inclusive of slaughtering and delivery.";
+        break;
+      case 'overseas':
+        response = "We specialize in serving overseas Pakistanis. You can pay via Remitly or Western Union, and we'll send you the video proof of your Qurbani.";
+        break;
+      case 'delivery':
+        response = "We offer home delivery in Lahore in temperature-controlled vans. Alternatively, we can donate 100% of the meat to verified local charities.";
+        break;
+      default:
+        response = "Please contact us directly on WhatsApp for more details!";
     }
+    
+    setMessages(prev => [
+      ...prev, 
+      { role: 'user', text: `Tell me about ${action}` },
+      { role: 'model', text: response }
+    ]);
   };
 
   return (
@@ -76,7 +57,7 @@ export const Chatbot = () => {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className={cn(
               "luxury-glass border border-gold/30 shadow-2xl rounded-2xl overflow-hidden flex flex-col transition-all duration-300",
-              isMinimized ? "h-16 w-64" : "h-[550px] w-[350px] md:w-[420px]"
+              isMinimized ? "h-16 w-64" : "h-[500px] w-[350px] md:w-[400px]"
             )}
           >
             {/* Header */}
@@ -86,8 +67,8 @@ export const Chatbot = () => {
                   <Bot className="w-6 h-6 text-primary" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="display-text text-lg text-white leading-none">Farm Assistant</span>
-                  <span className="micro-label text-gold text-[8px] tracking-[0.3em]">Online Support</span>
+                  <span className="display-text text-lg text-white leading-none">Farm Helper</span>
+                  <span className="micro-label text-gold text-[8px] tracking-[0.3em]">Instant Info</span>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -124,47 +105,42 @@ export const Chatbot = () => {
                           ? "bg-primary text-cream rounded-tr-none border border-gold/20" 
                           : "bg-white/5 backdrop-blur-md border border-white/10 text-cream rounded-tl-none"
                       )}>
-                        <div className="prose prose-invert prose-sm max-w-none">
-                          <ReactMarkdown>{msg.text}</ReactMarkdown>
-                        </div>
+                        <p className="whitespace-pre-line">{msg.text}</p>
                       </div>
                     </div>
                   ))}
-                  {isLoading && (
-                    <div className="flex gap-4 mr-auto">
-                      <div className="w-9 h-9 rounded-full bg-gold flex items-center justify-center animate-pulse">
-                        <Bot className="w-5 h-5 text-primary" />
-                      </div>
-                      <div className="bg-white/5 backdrop-blur-md border border-white/10 p-4 rounded-2xl rounded-tl-none shadow-sm">
-                        <div className="flex gap-1.5">
-                          <span className="w-2 h-2 bg-gold rounded-full animate-bounce"></span>
-                          <span className="w-2 h-2 bg-gold rounded-full animate-bounce [animation-delay:0.2s]"></span>
-                          <span className="w-2 h-2 bg-gold rounded-full animate-bounce [animation-delay:0.4s]"></span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
                   <div ref={messagesEndRef} />
                 </div>
 
-                {/* Input */}
+                {/* Quick Actions */}
                 <div className="p-5 border-t border-gold/20 bg-primary/40 backdrop-blur-xl">
-                  <div className="flex gap-3">
-                    <input
-                      type="text"
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                      placeholder="Ask about Qurbani..."
-                      className="flex-1 bg-white/5 border border-white/10 rounded-full px-6 py-3 text-sm text-white placeholder:text-cream/30 focus:outline-none focus:border-gold/50 transition-all"
-                    />
-                    <button
-                      onClick={handleSend}
-                      disabled={isLoading || !input.trim()}
-                      className="w-12 h-12 rounded-full bg-gold text-primary flex items-center justify-center hover:bg-white transition-all disabled:opacity-50 shadow-lg"
+                  <p className="text-gold/50 text-[10px] uppercase tracking-widest mb-3 text-center">Quick Inquiries</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button 
+                      onClick={() => handleQuickAction('pricing')}
+                      className="flex items-center gap-2 bg-white/5 hover:bg-gold hover:text-primary border border-gold/20 p-3 rounded-lg text-xs transition-all text-cream"
                     >
-                      <Send className="w-5 h-5" />
+                      <CreditCard className="w-3 h-3" /> Pricing
                     </button>
+                    <button 
+                      onClick={() => handleQuickAction('overseas')}
+                      className="flex items-center gap-2 bg-white/5 hover:bg-gold hover:text-primary border border-gold/20 p-3 rounded-lg text-xs transition-all text-cream"
+                    >
+                      <Info className="w-3 h-3" /> Overseas
+                    </button>
+                    <button 
+                      onClick={() => handleQuickAction('delivery')}
+                      className="flex items-center gap-2 bg-white/5 hover:bg-gold hover:text-primary border border-gold/20 p-3 rounded-lg text-xs transition-all text-cream"
+                    >
+                      <Truck className="w-3 h-3" /> Delivery
+                    </button>
+                    <a 
+                      href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || '923000000000'}`}
+                      target="_blank"
+                      className="flex items-center gap-2 bg-[#25D366] hover:bg-white hover:text-[#25D366] p-3 rounded-lg text-xs transition-all text-white font-bold"
+                    >
+                      <Phone className="w-3 h-3" /> WhatsApp
+                    </a>
                   </div>
                 </div>
               </>

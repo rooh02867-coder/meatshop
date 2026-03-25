@@ -22,10 +22,10 @@ export const BookingForm = ({ selectedPackage, onPackageSelect }: BookingFormPro
   });
 
   const packages = [
-    { id: 'Goat', name: 'Bakra / Goat', icon: '🐑' },
-    { id: 'Cow Share', name: 'Cow Share (1/7)', icon: '🥧' },
-    { id: 'Whole Cow', name: 'Whole Cow', icon: '🐄', premium: true },
-    { id: 'Sadqah', name: 'Sadqah / Damm', icon: '❤️' }
+    { id: 'Goat', name: 'Bakra / Goat', img: 'https://images.unsplash.com/photo-1524024973431-2ad916746881?q=80&w=200&h=200&auto=format&fit=crop' },
+    { id: 'Cow Share', name: 'Cow Share (1/7)', img: 'https://images.unsplash.com/photo-1546445317-29f4545e9d53?q=80&w=200&h=200&auto=format&fit=crop' },
+    { id: 'Whole Cow', name: 'Whole Cow', img: 'https://images.unsplash.com/photo-1563500310-70f90e633a6e?q=80&w=200&h=200&auto=format&fit=crop', premium: true },
+    { id: 'Sadqah', name: 'Sadqah / Damm', img: 'https://images.unsplash.com/photo-1596733430284-f7437764b1a9?q=80&w=200&h=200&auto=format&fit=crop' }
   ];
 
   const handleNext = () => {
@@ -61,7 +61,15 @@ export const BookingForm = ({ selectedPackage, onPackageSelect }: BookingFormPro
   };
 
   return (
-    <section id="booking" className="py-24 bg-cream relative arabesque-pattern cream-bg border-t border-gold/20">
+    <section id="booking" className="py-24 bg-cream relative arabesque-pattern cream-bg border-t border-gold/20 overflow-hidden">
+      <div className="absolute inset-0 z-0 opacity-[0.03] grayscale">
+        <img 
+          src="https://images.unsplash.com/photo-1563500310-70f90e633a6e?q=80&w=2070&auto=format&fit=crop" 
+          className="w-full h-full object-cover"
+          alt="Cattle background"
+          referrerPolicy="no-referrer"
+        />
+      </div>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-12">
           <h2 className="font-serif text-4xl md:text-5xl text-primary font-bold mb-4">Reserve Your Qurbani</h2>
@@ -136,7 +144,12 @@ export const BookingForm = ({ selectedPackage, onPackageSelect }: BookingFormPro
                                   Premium
                                 </div>
                               )}
-                              <span className="text-4xl mb-4 group-hover:scale-110 transition-transform">{pkg.icon}</span>
+                              <img 
+                                src={pkg.img} 
+                                alt={pkg.name} 
+                                className="w-16 h-16 rounded-full object-cover mb-4 group-hover:scale-110 transition-transform border-2 border-gold/20"
+                                referrerPolicy="no-referrer"
+                              />
                               <div className="font-serif text-2xl text-primary font-bold">{pkg.name}</div>
                             </div>
                           </label>

@@ -34,7 +34,15 @@ export const Process = () => {
 
   return (
     <section id="process" className="py-32 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="absolute inset-0 z-0 opacity-5 grayscale scale-110">
+        <img 
+          src="https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?q=80&w=2070&auto=format&fit=crop" 
+          className="w-full h-full object-cover"
+          alt="Cattle background"
+          referrerPolicy="no-referrer"
+        />
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-24">
           <motion.span 
             initial={{ opacity: 0 }}

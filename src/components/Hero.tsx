@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Moon, Globe, Camera, Home, Loader2 } from 'lucide-react';
-import { GoogleGenAI } from "@google/genai";
 import { BullIcon } from './Navbar';
 
 export const Hero = () => {
@@ -11,41 +10,9 @@ export const Hero = () => {
   const words = titleText.split(' ');
 
   useEffect(() => {
-    const generateHeroImage = async () => {
-      try {
-        const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
-        const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash-image',
-          contents: {
-            parts: [
-              {
-                text: 'A high-contrast, cinematic studio portrait of a powerful bull, illuminated by intense red neon rim lighting. The background is pitch black to make the red light pop. Hyper-realistic textures on the fur and horns. Professional photography style, 8k resolution, sleek and aggressive aesthetic.',
-              },
-            ],
-          },
-          config: {
-            imageConfig: {
-              aspectRatio: "16:9",
-            },
-          },
-        });
-
-        for (const part of response.candidates?.[0]?.content?.parts || []) {
-          if (part.inlineData) {
-            setHeroImage(`data:image/png;base64,${part.inlineData.data}`);
-            break;
-          }
-        }
-      } catch (error) {
-        console.error("Failed to generate hero image:", error);
-        // Fallback to a high-quality bull image if generation fails
-        setHeroImage('https://images.unsplash.com/photo-1558024920-b41e1887dc32?q=80&w=2070&auto=format&fit=crop');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    generateHeroImage();
+    // Static high-quality bull image for reliability without API keys
+    setHeroImage('https://images.unsplash.com/photo-1596733430284-f7437764b1a9?q=80&w=2070&auto=format&fit=crop');
+    setIsLoading(false);
   }, []);
 
   return (

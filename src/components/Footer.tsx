@@ -5,11 +5,11 @@ import { Facebook, Instagram, MessageCircle, Youtube, Mail, Phone, MapPin, Plus,
 export const Gallery = () => {
   const images = [
     { src: 'https://images.unsplash.com/photo-1596733430284-f7437764b1a9?q=80&w=2070&auto=format&fit=crop', title: 'Majestic Brahman' },
-    { src: 'https://images.unsplash.com/photo-1558024920-b41e1887dc32?q=80&w=2070&auto=format&fit=crop', title: 'Healthy Brahman Bulls' },
-    { src: 'https://images.unsplash.com/photo-1484557918186-734bb060733f?q=80&w=2070&auto=format&fit=crop', title: 'Premium Sheep' },
+    { src: 'https://images.unsplash.com/photo-1563500310-70f90e633a6e?q=80&w=2070&auto=format&fit=crop', title: 'Healthy Brahman Bulls' },
+    { src: 'https://images.unsplash.com/photo-1524024973431-2ad916746881?q=80&w=2070&auto=format&fit=crop', title: 'Premium Sheep' },
     { src: 'https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?q=80&w=2070&auto=format&fit=crop', title: 'Modern Baras' },
     { src: 'https://images.unsplash.com/photo-1546445317-29f4545e9d53?q=80&w=2070&auto=format&fit=crop', title: 'Farm Life' },
-    { src: 'https://images.unsplash.com/photo-1563500310-70f90e633a6e?q=80&w=2070&auto=format&fit=crop', title: 'Prize Bull' }
+    { src: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070&auto=format&fit=crop', title: 'Prize Bull' }
   ];
 
   return (

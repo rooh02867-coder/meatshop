@@ -5,7 +5,7 @@ import { cn } from '../lib/utils';
 import { BullIcon } from './Navbar';
 
 interface PackageProps {
-  icon: React.ReactNode;
+  image: string;
   title: string;
   subtitle: string;
   price: string;
@@ -16,64 +16,70 @@ interface PackageProps {
   onSelect: (pkg: string) => void;
 }
 
-const PackageCard = ({ icon, title, subtitle, price, features, isPopular, isPremium, delay = 0, onSelect }: PackageProps) => (
+const PackageCard = ({ image, title, subtitle, price, features, isPopular, isPremium, delay = 0, onSelect }: PackageProps) => (
   <motion.div
     initial={{ opacity: 0, y: 40 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     transition={{ delay, duration: 0.8 }}
     className={cn(
-      "luxury-glass rounded-sm p-10 text-center flex flex-col h-full group relative transition-all duration-500 hover:-translate-y-2",
+      "luxury-glass rounded-sm overflow-hidden flex flex-col h-full group relative transition-all duration-500 hover:-translate-y-2",
       isPopular && "lg:-translate-y-6 border-gold shadow-[0_30px_60px_rgba(201,168,76,0.2)]"
     )}
   >
     {isPopular && (
-      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gold text-primary px-6 py-1.5 micro-label text-[10px] shadow-xl">
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-gold text-primary px-6 py-1.5 micro-label text-[10px] shadow-xl z-20">
         Most Popular
       </div>
     )}
     {isPremium && (
-      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-charcoal border border-gold text-gold px-6 py-1.5 micro-label text-[10px] shadow-xl">
-        <Crown className="w-3 h-3" /> Premium
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-charcoal border border-gold text-gold px-6 py-1.5 micro-label text-[10px] shadow-xl z-20">
+        <Crown className="w-3 h-3 inline mr-1" /> Premium
       </div>
     )}
     
-    <div className="mb-8 h-20 flex items-center justify-center">
-      <div className="text-gold opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-        {icon}
+    <div className="relative h-48 overflow-hidden">
+      <img 
+        src={image} 
+        alt={title} 
+        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+        referrerPolicy="no-referrer"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-primary to-transparent opacity-60"></div>
+    </div>
+    
+    <div className="p-10 pt-6 flex flex-col flex-grow">
+      <h3 className="display-text text-3xl text-white mb-2">{title}</h3>
+      <p className="font-serif text-gold/60 italic mb-8 border-b border-gold/10 pb-4 inline-block mx-auto">
+        {subtitle}
+      </p>
+      
+      <ul className="text-left space-y-4 mb-10 text-cream/70 font-sans flex-grow">
+        {features.map((feature, idx) => (
+          <li key={idx} className="flex items-start gap-3">
+            <Check className="text-gold w-4 h-4 mt-0.5 shrink-0" />
+            <span className="text-sm tracking-wide">{feature}</span>
+          </li>
+        ))}
+      </ul>
+      
+      <div className="mb-10">
+        <span className="micro-label text-gold/50 block mb-1">Starting at</span>
+        <span className="font-sans text-4xl font-bold text-white tracking-tighter">{price}</span>
       </div>
+      
+      <button
+        onClick={() => onSelect(title)}
+        className={cn(
+          "w-full block py-4 micro-label tracking-[0.3em] transition-all duration-300",
+          isPopular 
+            ? "bg-gold text-primary hover:bg-white" 
+            : "bg-transparent border border-gold/30 text-gold hover:bg-gold hover:text-primary"
+        )}
+      >
+        Book This Package
+      </button>
     </div>
-    
-    <h3 className="display-text text-3xl text-white mb-2">{title}</h3>
-    <p className="font-serif text-gold/60 italic mb-8 border-b border-gold/10 pb-4 inline-block mx-auto">
-      {subtitle}
-    </p>
-    
-    <ul className="text-left space-y-4 mb-10 text-cream/70 font-sans flex-grow">
-      {features.map((feature, idx) => (
-        <li key={idx} className="flex items-start gap-3">
-          <Check className="text-gold w-4 h-4 mt-0.5 shrink-0" />
-          <span className="text-sm tracking-wide">{feature}</span>
-        </li>
-      ))}
-    </ul>
-    
-    <div className="mb-10">
-      <span className="micro-label text-gold/50 block mb-1">Starting at</span>
-      <span className="font-sans text-4xl font-bold text-white tracking-tighter">{price}</span>
-    </div>
-    
-    <button
-      onClick={() => onSelect(title)}
-      className={cn(
-        "w-full block py-4 micro-label tracking-[0.3em] transition-all duration-300",
-        isPopular 
-          ? "bg-gold text-primary hover:bg-white" 
-          : "bg-transparent border border-gold/30 text-gold hover:bg-gold hover:text-primary"
-      )}
-    >
-      Book This Package
-    </button>
   </motion.div>
 );
 
@@ -102,7 +108,7 @@ export const Packages = ({ onSelect }: { onSelect: (pkg: string) => void }) => {
 
         <div className="grid lg:grid-cols-3 gap-8 mb-12">
           <PackageCard
-            icon={<BullIcon className="w-16 h-16" />}
+            image="https://images.unsplash.com/photo-1524024973431-2ad916746881?q=80&w=2070&auto=format&fit=crop"
             title="Bakra / Goat"
             subtitle="Individual Qurbani"
             price="PKR 55,000"
@@ -116,7 +122,7 @@ export const Packages = ({ onSelect }: { onSelect: (pkg: string) => void }) => {
             onSelect={onSelect}
           />
           <PackageCard
-            icon={<PieChart className="w-16 h-16" />}
+            image="https://images.unsplash.com/photo-1546445317-29f4545e9d53?q=80&w=2070&auto=format&fit=crop"
             title="Bull Hissa"
             subtitle="1/7 Share of Brahman Bull"
             price="PKR 27,000"
@@ -131,7 +137,7 @@ export const Packages = ({ onSelect }: { onSelect: (pkg: string) => void }) => {
             onSelect={onSelect}
           />
           <PackageCard
-            icon={<BullIcon className="w-16 h-16" />}
+            image="https://images.unsplash.com/photo-1563500310-70f90e633a6e?q=80&w=2070&auto=format&fit=crop"
             title="Whole Bull"
             subtitle="Full Brahman Bull Qurbani"
             price="PKR 185,000"

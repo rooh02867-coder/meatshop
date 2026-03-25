@@ -28,8 +28,8 @@ export const Farm = () => {
             <div className="absolute -inset-4 border-2 border-gold transform -rotate-2 z-0"></div>
             <div className="relative z-10 overflow-hidden aspect-[4/5] shadow-[0_20px_50px_rgba(139,0,0,0.2)]">
               <img
-                src="https://images.unsplash.com/photo-1558024920-b41e1887dc32?q=80&w=2070&auto=format&fit=crop"
-                alt="Mushtaq Farm Brahman Bulls"
+                src="https://images.unsplash.com/photo-1596733430284-f7437764b1a9?q=80&w=2070&auto=format&fit=crop"
+                alt="Mushtaq Farm Livestock"
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
               />
