@@ -3,7 +3,15 @@ import { motion } from 'motion/react';
 import { Monitor, ShieldCheck, Scissors, Video, Package } from 'lucide-react';
 import { BullIcon } from './Navbar';
 
-const ProcessStep = ({ number, icon: Icon, title, desc, delay }: { number: number; icon: any; title: string; desc: string; delay: number }) => (
+interface ProcessStepProps {
+  number: number;
+  icon: any;
+  title: string;
+  desc: string;
+  delay: number;
+}
+
+const ProcessStep = ({ number, icon: Icon, title, desc, delay }: ProcessStepProps) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -59,7 +67,15 @@ export const Process = () => {
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-12">
           {steps.map((step, idx) => (
-            <ProcessStep key={idx} number={idx + 1} {...step} delay={idx * 0.1} />
+            <div key={idx}>
+              <ProcessStep 
+                number={idx + 1} 
+                icon={step.icon} 
+                title={step.title} 
+                desc={step.desc} 
+                delay={idx * 0.1} 
+              />
+            </div>
           ))}
         </div>
       </div>

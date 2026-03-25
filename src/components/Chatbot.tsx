@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, Send, X, Minus, Maximize2, Bot, User, Phone, Info, CreditCard, Truck } from 'lucide-react';
+import { MessageSquare, Send, X, Minus, Maximize2, Bot, User, Phone, Info, CreditCard, Truck, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
+import { GoogleGenAI } from "@google/genai";
 
 interface Message {
   role: 'user' | 'model';
@@ -11,8 +12,10 @@ interface Message {
 export const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [inputText, setInputText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'model', text: "As-salamu alaykum! I'm the Mushtaq Cattle Farm assistant. How can I help you with your Qurbani booking today?" }
+    { role: 'model', text: "As-salamu alaykum! I'm the Mushtaq Cattle Farm assistant. How can I help you with your Qurbani booking today? (I can speak Urdu and English)" }
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -24,27 +27,46 @@ export const Chatbot = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleQuickAction = (action: string) => {
-    let response = "";
-    switch(action) {
-      case 'pricing':
-        response = "Our 2026 packages are: \n- Bakra/Goat: PKR 55,000\n- Cow Hissa: PKR 27,000\n- Whole Cow: PKR 185,000\nAll inclusive of slaughtering and delivery.";
-        break;
-      case 'overseas':
-        response = "We specialize in serving overseas Pakistanis. You can pay via Remitly or Western Union, and we'll send you the video proof of your Qurbani.";
-        break;
-      case 'delivery':
-        response = "We offer home delivery in Lahore in temperature-controlled vans. Alternatively, we can donate 100% of the meat to verified local charities.";
-        break;
-      default:
-        response = "Please contact us directly on WhatsApp for more details!";
+  const handleSendMessage = async (text: string) => {
+    if (!text.trim() || isLoading) return;
+
+    const userMessage: Message = { role: 'user', text };
+    setMessages(prev => [...prev, userMessage]);
+    setInputText('');
+    setIsLoading(true);
+
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: [...messages, userMessage].map(m => ({
+          role: m.role,
+          parts: [{ text: m.text }]
+        })),
+        config: {
+          systemInstruction: `You are the Mushtaq Cattle Farm assistant. 
+          Your goal is to help customers book Qurbani animals (Goats, Bulls, Cow Shares).
+          Pricing: Bakra/Goat: PKR 55,000, Cow Hissa: PKR 27,000, Whole Cow: PKR 185,000.
+          Location: Lahore, Pakistan. We serve overseas Pakistanis (UK, UAE, USA) via Remitly/Western Union.
+          We provide video proof of sacrifice.
+          IMPORTANT: Reply in the SAME language the user uses. If they ask in Urdu, reply in Urdu. If in English, reply in English.
+          Be polite, professional, and helpful.`,
+        },
+      });
+
+      const modelText = response.text || "I'm sorry, I couldn't process that. Please contact us on WhatsApp.";
+      setMessages(prev => [...prev, { role: 'model', text: modelText }]);
+    } catch (error) {
+      console.error("Gemini Error:", error);
+      setMessages(prev => [...prev, { role: 'model', text: "I'm having trouble connecting. Please try again or message us on WhatsApp." }]);
+    } finally {
+      setIsLoading(false);
     }
-    
-    setMessages(prev => [
-      ...prev, 
-      { role: 'user', text: `Tell me about ${action}` },
-      { role: 'model', text: response }
-    ]);
+  };
+
+  const handleQuickAction = (action: string) => {
+    const text = `Tell me about ${action}`;
+    handleSendMessage(text);
   };
 
   return (
@@ -57,7 +79,7 @@ export const Chatbot = () => {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className={cn(
               "luxury-glass border border-gold/30 shadow-2xl rounded-2xl overflow-hidden flex flex-col transition-all duration-300",
-              isMinimized ? "h-16 w-64" : "h-[500px] w-[350px] md:w-[400px]"
+              isMinimized ? "h-16 w-64" : "h-[550px] w-[350px] md:w-[400px]"
             )}
           >
             {/* Header */}
@@ -68,14 +90,22 @@ export const Chatbot = () => {
                 </div>
                 <div className="flex flex-col">
                   <span className="display-text text-lg text-white leading-none">Farm Helper</span>
-                  <span className="micro-label text-gold text-[8px] tracking-[0.3em]">Instant Info</span>
+                  <span className="micro-label text-gold text-[8px] tracking-[0.3em]">AI Assistant</span>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <button onClick={() => setIsMinimized(!isMinimized)} className="text-gold/50 hover:text-gold transition-colors">
+                <button 
+                  onClick={() => setIsMinimized(!isMinimized)} 
+                  className="text-gold/50 hover:text-gold transition-colors p-1"
+                  title={isMinimized ? "Expand" : "Minimize"}
+                >
                   {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minus className="w-4 h-4" />}
                 </button>
-                <button onClick={() => setIsOpen(false)} className="text-gold/50 hover:text-gold transition-colors">
+                <button 
+                  onClick={() => setIsOpen(false)} 
+                  className="text-gold/50 hover:text-gold transition-colors p-1"
+                  title="Close"
+                >
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -109,37 +139,59 @@ export const Chatbot = () => {
                       </div>
                     </div>
                   ))}
+                  {isLoading && (
+                    <div className="flex gap-4 mr-auto">
+                      <div className="w-9 h-9 rounded-full bg-gold flex items-center justify-center shrink-0 shadow-md">
+                        <Bot className="w-5 h-5 text-primary" />
+                      </div>
+                      <div className="p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 text-cream rounded-tl-none flex items-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin text-gold" />
+                        <span className="text-xs italic opacity-50">Typing...</span>
+                      </div>
+                    </div>
+                  )}
                   <div ref={messagesEndRef} />
                 </div>
 
-                {/* Quick Actions */}
-                <div className="p-5 border-t border-gold/20 bg-primary/40 backdrop-blur-xl">
-                  <p className="text-gold/50 text-[10px] uppercase tracking-widest mb-3 text-center">Quick Inquiries</p>
+                {/* Input Area */}
+                <div className="p-4 border-t border-gold/20 bg-primary/40 backdrop-blur-xl">
+                  <div className="flex gap-2 mb-4">
+                    <input
+                      type="text"
+                      value={inputText}
+                      onChange={(e) => setInputText(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleSendMessage(inputText)}
+                      placeholder="Ask in Urdu or English..."
+                      className="flex-1 bg-white/5 border border-gold/20 rounded-lg px-4 py-2 text-sm text-cream focus:outline-none focus:border-gold transition-colors"
+                    />
+                    <button
+                      onClick={() => handleSendMessage(inputText)}
+                      disabled={isLoading || !inputText.trim()}
+                      className="bg-gold text-primary p-2 rounded-lg hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <Send className="w-5 h-5" />
+                    </button>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-2">
                     <button 
                       onClick={() => handleQuickAction('pricing')}
-                      className="flex items-center gap-2 bg-white/5 hover:bg-gold hover:text-primary border border-gold/20 p-3 rounded-lg text-xs transition-all text-cream"
+                      className="flex items-center gap-2 bg-white/5 hover:bg-gold hover:text-primary border border-gold/20 p-2 rounded-lg text-[10px] transition-all text-cream"
                     >
                       <CreditCard className="w-3 h-3" /> Pricing
                     </button>
                     <button 
                       onClick={() => handleQuickAction('overseas')}
-                      className="flex items-center gap-2 bg-white/5 hover:bg-gold hover:text-primary border border-gold/20 p-3 rounded-lg text-xs transition-all text-cream"
+                      className="flex items-center gap-2 bg-white/5 hover:bg-gold hover:text-primary border border-gold/20 p-2 rounded-lg text-[10px] transition-all text-cream"
                     >
                       <Info className="w-3 h-3" /> Overseas
-                    </button>
-                    <button 
-                      onClick={() => handleQuickAction('delivery')}
-                      className="flex items-center gap-2 bg-white/5 hover:bg-gold hover:text-primary border border-gold/20 p-3 rounded-lg text-xs transition-all text-cream"
-                    >
-                      <Truck className="w-3 h-3" /> Delivery
                     </button>
                     <a 
                       href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || '15551385960'}`}
                       target="_blank"
-                      className="flex items-center gap-2 bg-[#25D366] hover:bg-white hover:text-[#25D366] p-3 rounded-lg text-xs transition-all text-white font-bold"
+                      className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-white hover:text-[#25D366] p-2 rounded-lg text-[10px] transition-all text-white font-bold col-span-2"
                     >
-                      <Phone className="w-3 h-3" /> WhatsApp
+                      <Phone className="w-3 h-3" /> WhatsApp for Direct Booking
                     </a>
                   </div>
                 </div>
