@@ -96,7 +96,8 @@ LANGUAGE RULE — THIS IS CRITICAL:
       setMessages(prev => [...prev, { role: 'model', text: modelText }]);
     } catch (error) {
       console.error("Gemini Error:", error);
-      setMessages(prev => [...prev, { role: 'model', text: "I'm having trouble connecting. Please try again or message us on WhatsApp." }]);
+      const errMsg = error instanceof Error ? error.message : String(error);
+      setMessages(prev => [...prev, { role: 'model', text: `❌ Error: ${errMsg}` }]);
     } finally {
       setIsLoading(false);
     }
