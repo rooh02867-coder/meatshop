@@ -70,18 +70,21 @@ export const Chatbot = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[1000] font-sans">
+    <div className="fixed bottom-6 right-4 sm:right-6 z-[1001] font-sans flex flex-col items-end gap-3">
       <AnimatePresence>
         {isOpen && (
           <motion.div
             layout
-            initial={{ opacity: 0, scale: 0.9, y: 20, x: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20, x: 20 }}
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className={cn(
               "luxury-glass border border-gold/30 shadow-2xl rounded-2xl overflow-hidden flex flex-col transition-all duration-500",
-              isMinimized ? "h-[60px] w-[220px]" : "h-[550px] md:h-[650px] w-[320px] md:w-[400px] max-h-[85vh]"
+              isMinimized
+                ? "h-[60px] w-[220px]"
+                : "w-[calc(100vw-2rem)] sm:w-[360px] md:w-[400px]"
             )}
+            style={!isMinimized ? { height: 'min(600px, calc(100vh - 120px))' } : {}}
           >
             {/* Header */}
             <div 
@@ -223,23 +226,27 @@ export const Chatbot = () => {
         )}
       </AnimatePresence>
 
-      <motion.button
-        whileHover={{ scale: 1.1, rotate: 5 }}
-        whileTap={{ scale: 0.9 }}
-        onClick={() => {
-          setIsOpen(true);
-          setIsMinimized(false);
-        }}
-        className={cn(
-          "w-16 h-16 rounded-full bg-gold text-primary shadow-[0_10px_40px_rgba(201,168,76,0.5)] flex items-center justify-center transition-all duration-500 hover:bg-white group",
-          isOpen ? "opacity-0 pointer-events-none translate-y-10" : "opacity-100 translate-y-0"
+      <AnimatePresence>
+        {!isOpen && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 10 }}
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => {
+              setIsOpen(true);
+              setIsMinimized(false);
+            }}
+            className="relative w-16 h-16 rounded-full bg-gold text-primary shadow-[0_10px_40px_rgba(201,168,76,0.5)] flex items-center justify-center hover:bg-white group"
+          >
+            <MessageSquare className="w-7 h-7 group-hover:scale-110 transition-transform" />
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#8B0000] rounded-full border-2 border-primary flex items-center justify-center">
+              <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
+            </span>
+          </motion.button>
         )}
-      >
-        <MessageSquare className="w-7 h-7 group-hover:scale-110 transition-transform" />
-        <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#8B0000] rounded-full border-2 border-primary flex items-center justify-center">
-          <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-        </span>
-      </motion.button>
+      </AnimatePresence>
     </div>
   );
 };
